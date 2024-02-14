@@ -1,0 +1,19 @@
+kind: Service
+apiVersion: v1
+metadata:
+  name: gitlab-redis
+  namespace: gitlab
+  labels:
+    name: gitlab-redis
+    rht-gitops.com/openshift-gitops: gitlab
+spec:
+  ports:
+    - name: redis
+      protocol: TCP
+      port: 6379
+      targetPort: redis
+  internalTrafficPolicy: Cluster
+  ipFamilyPolicy: SingleStack
+  sessionAffinity: None
+  selector:
+    name: gitlab-redis

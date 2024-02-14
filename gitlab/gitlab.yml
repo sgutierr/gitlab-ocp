@@ -1,0 +1,66 @@
+kind: Deployment
+apiVersion: apps/v1
+metadata:
+  resourceVersion: '78945'
+  name: gitlab
+  namespace: gitlab
+  labels:
+    app: gitlab
+    rht-gitops.com/openshift-gitops: gitlab
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: gitlab
+  template:
+    metadata:
+      creationTimestamp: null
+      labels:
+        app: gitlab
+    spec:
+      restartPolicy: Always
+      serviceAccountName: gitlab
+      schedulerName: default-scheduler
+      terminationGracePeriodSeconds: 30
+      securityContext: {}
+      containers:
+        - resources:
+            requests:
+              cpu: '2'
+              memory: 4Gi
+          terminationMessagePath: /dev/termination-log
+          name: gitlab
+          securityContext:
+            privileged: true
+          ports:
+            - name: ssh
+              containerPort: 22
+              protocol: TCP
+            - name: http
+              containerPort: 80
+              protocol: TCP
+          imagePullPolicy: Always
+          volumeMounts:
+            - name: gitlab-persistent-storage
+              mountPath: /home/git/data
+          terminationMessagePolicy: File
+          envFrom:
+            - configMapRef:
+                name: gitlab-cm
+            - secretRef:
+                name: gitlab-secret
+          image: 'quay.io/redhat-gpte/gitlab:16.0.4'
+      serviceAccount: gitlab
+      volumes:
+        - name: gitlab-persistent-storage
+          persistentVolumeClaim:
+            claimName: gitlab-persistent-storage
+      dnsPolicy: ClusterFirst
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxUnavailable: 25%
+      maxSurge: 25%
+  revisionHistoryLimit: 10
+  progressDeadlineSeconds: 600
+

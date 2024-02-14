@@ -1,0 +1,19 @@
+kind: Service
+apiVersion: v1
+metadata:
+  name: gitlab-postgresql
+  namespace: gitlab
+  labels:
+    name: gitlab-postgresql
+    rht-gitops.com/openshift-gitops: gitlab
+spec:
+  ports:
+    - name: postgres
+      protocol: TCP
+      port: 5432
+      targetPort: postgres
+  internalTrafficPolicy: Cluster
+  ipFamilyPolicy: SingleStack
+  sessionAffinity: None
+  selector:
+    name: gitlab-postgresql

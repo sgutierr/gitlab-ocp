@@ -1,0 +1,13 @@
+kind: ServiceAccount
+apiVersion: v1
+metadata:
+  name: gitlab
+  namespace: gitlab
+  labels:
+    app: gitlab
+    rht-gitops.com/openshift-gitops: gitlab
+secrets:
+  - name: my-docker-registry
+imagePullSecrets:
+  - name: my-docker-registry
+

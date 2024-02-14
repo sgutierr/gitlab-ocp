@@ -1,0 +1,16 @@
+apiVersion: apps.gitlab.com/v1beta1
+kind: GitLab
+metadata:
+  name: gitlab
+  namespace: gitlab
+spec:
+  chart:
+    values:
+      certmanager:
+        install: true
+      global:
+        hosts:
+          domain: apps.ocp4.quitala.eu
+        ingress:
+          configureCertmanager: true
+    version: 7.8.2

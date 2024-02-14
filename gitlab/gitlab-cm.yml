@@ -1,0 +1,40 @@
+kind: ConfigMap
+apiVersion: v1
+metadata:
+  name: gitlab-cm
+  namespace: gitlab
+  labels:
+    app: gitlab
+    rht-gitops.com/openshift-gitops: gitlab
+data:
+  GITLAB_PIPELINE_SCHEDULE_WORKER_CRON: '*/5 * * * *'
+  SMTP_AUTHENTICATION: login
+  GITLAB_NOTIFY_ON_BROKEN_BUILDS: 'true'
+  SMTP_STARTTLS: 'true'
+  DB_PORT: '5432'
+  GITLAB_ROOT_EMAIL: root@opentlc.com
+  GITLAB_SSH_HOST: ssh.gitlab-gitlab.apps.ocp4.quitala.eu
+  REDIS_PORT: '6379'
+  GITLAB_PORT: '443'
+  GITLAB_BACKUP_TIME: '04:30'
+  TZ: Europe/Berlin
+  GITLAB_HTTPS: 'true'
+  DB_HOST: gitlab-postgresql.gitlab.svc
+  SMTP_PORT: '587'
+  DB_NAME: gitlab_production
+  REDIS_HOST: gitlab-redis.gitlab.svc
+  GITLAB_HOST: gitlab-gitlab.apps.ocp4.quitala.eu
+  DB_USER: gitlab
+  SMTP_DOMAIN: example.com
+  DB_ADAPTER: postgresql
+  GITLAB_EMAIL_DISPLAY_NAME: Janus Admin
+  GITLAB_BACKUP_SCHEDULE: daily
+  SMTP_HOST: smtp.gitlab-gitlab.apps.ocp4.quitala.eu
+  SMTP_USER: gitlab
+  GITLAB_EMAIL_REPLY_TO: noreply@redhat.com
+  SMTP_ENABLED: 'false'
+  GITLAB_EMAIL: gitlab@example.com
+  GITLAB_NOTIFY_PUSHER: 'false'
+  GITLAB_SSH_PORT: '22'
+  GITLAB_TIMEZONE: Berlin
+  NGINX_MAX_UPLOAD_SIZE: 100m

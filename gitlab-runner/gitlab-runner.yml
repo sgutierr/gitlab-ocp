@@ -1,0 +1,9 @@
+apiVersion: apps.gitlab.com/v1beta2
+kind: Runner
+metadata:
+ name: gitlab-runner
+spec:
+ gitlabUrl: gitlab.appdev-gitlab.apps.ocp4.quitala.eu
+ buildImage: alpine
+ token: gitlab-runner-secret
+ tags: openshift

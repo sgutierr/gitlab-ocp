@@ -1,0 +1,73 @@
+kind: Deployment
+apiVersion: apps/v1
+metadata:
+  name: gitlab-redis
+  namespace: gitlab
+  labels:
+    name: gitlab-redis
+    rht-gitops.com/openshift-gitops: gitlab
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      name: gitlab-redis
+  template:
+    metadata:
+      creationTimestamp: null
+      labels:
+        name: gitlab-redis
+    spec:
+      restartPolicy: Always
+      serviceAccountName: gitlab
+      schedulerName: default-scheduler
+      terminationGracePeriodSeconds: 30
+      securityContext: {}
+      containers:
+        - resources: {}
+          readinessProbe:
+            exec:
+              command:
+                - redis-cli
+                - ping
+            initialDelaySeconds: 5
+            timeoutSeconds: 1
+            periodSeconds: 10
+            successThreshold: 1
+            failureThreshold: 3
+          terminationMessagePath: /dev/termination-log
+          name: redis
+          livenessProbe:
+            exec:
+              command:
+                - redis-cli
+                - ping
+            initialDelaySeconds: 30
+            timeoutSeconds: 5
+            periodSeconds: 10
+            successThreshold: 1
+            failureThreshold: 3
+          securityContext:
+            privileged: true
+          ports:
+            - name: redis
+              containerPort: 6379
+              protocol: TCP
+          imagePullPolicy: IfNotPresent
+          volumeMounts:
+            - name: data
+              mountPath: /var/lib/redis
+          terminationMessagePolicy: File
+          image: 'redis:6.2.6'
+      serviceAccount: gitlab-runner-sa
+      volumes:
+        - name: data
+          persistentVolumeClaim:
+            claimName: gitlab-redis
+      dnsPolicy: ClusterFirst
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxUnavailable: 25%
+      maxSurge: 25%
+  revisionHistoryLimit: 10
+  progressDeadlineSeconds: 600
